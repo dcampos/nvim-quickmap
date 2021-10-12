@@ -13,9 +13,9 @@ Mapper._default_opts = { noremap = true, silent = true }
 Mapper._store = store
 
 function Mapper._run(mode, lhs, buffer)
-    local fn = Mapper._store.get(mode, lhs, buffer or -1)
+    local fn = Mapper._store.get(mode, lhs, buffer)
     if fn then
-        fn()
+        return fn()
     else
         error(string.format('No stored function for mode %s and lhs %s', mode, lhs))
     end
