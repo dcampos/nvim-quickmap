@@ -1,3 +1,7 @@
+--[[--
+Module for storing functions.
+]]
+
 local M = {}
 
 local mt
@@ -25,10 +29,10 @@ function M.set(mode, lhs, buffer, fn)
 end
 
 --- Retrieves a stored function
----@param mode string
----@param lhs string
----@param buffer number
----@return function
+-- @tparam string mode
+-- @tparam string lhs
+-- @tparam integer buffer
+-- @treturn function
 function M.get(mode, lhs, buffer)
     if buffer then
         return M._buf_store[mode][buffer][lhs]

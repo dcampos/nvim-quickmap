@@ -1,5 +1,8 @@
-local M = {}
+--[[--
+Utilities.
+]]
 
+local M = {}
 
 M.valid_opts = {
     'noremap',
@@ -10,6 +13,10 @@ M.valid_opts = {
     'unique',
 }
 
+--- Validates mapping options.
+-- @tparam table opts
+-- @treturn boolean Validation result.
+-- @treturn ?string Error message.
 function M.validate_opts(opts)
     if type(opts) ~= 'table' then
         return false, "'opts' should be a table"

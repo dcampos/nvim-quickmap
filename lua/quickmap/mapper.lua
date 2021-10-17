@@ -1,3 +1,7 @@
+--[[--
+Mapper module.
+]]
+
 local store = require 'quickmap.store'
 local util = require 'quickmap.util'
 
@@ -75,7 +79,7 @@ end
 --- Add a mapping by key/value pair.
 ---
 --- Example:
----
+--- <pre>
 --- mapper:add {
 ---     ['<Tab>'] = function()
 ---         ...
@@ -84,7 +88,7 @@ end
 ---         ...
 ---     end,
 --- }
----
+--- </pre>
 ---@param specs table Table with specs
 ---@param opts table Table with options to apply to all specs
 function Mapper:add(specs, opts)

@@ -1,6 +1,8 @@
---[[
-Examples:
+--[[--
+Neovim plugin for quickly mappings keys.
 
+Examples:
+<pre>
     quickmap['is']:add {
         ['<Tab>'] = function()
             ...
@@ -47,7 +49,7 @@ Examples:
     quickmap['nvo'] = { { ... }, { noremap = false } }
 
     quickmap['nvo'] = { bufnr, { ... }, { noremap = false } }
-
+</pre>
 ]]
 
 local Mapper = require 'quickmap.mapper'
@@ -121,7 +123,7 @@ function M.setup(config)
 end
 
 --- Adds a set of mappings.
----
+--- <pre>
 --- quickmap.add {
 ---     { 'is', '<Tab>', function() ... end },
 ---     { 'is', '<Tab>', function() ... end, { noremap = false } },
@@ -136,8 +138,8 @@ end
 --- }
 ---
 --- quickmap.add({ <specs> }, { <common opts> })
----
----@param specs table Table with mapping specifications
+--- </pre>
+---@tparam table specs Table with mapping specifications
 ---@param opts table Common options for these mappings
 function M.add(specs, opts)
     vim.validate({
