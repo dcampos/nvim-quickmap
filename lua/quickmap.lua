@@ -54,6 +54,10 @@ local Mapper = require 'quickmap.mapper'
 
 local M = {}
 
+M.config = {
+    default_opts = Mapper._default_opts
+}
+
 ---@private
 local function _add(specs, opts, buffer)
     vim.validate({
@@ -61,7 +65,7 @@ local function _add(specs, opts, buffer)
         opts = { opts, 'table', true },
         buffer = { buffer, 'number', true },
     })
-    opts = vim.tbl_extend('keep', opts or {}, Mapper._default_opts)
+    opts = vim.tbl_extend('keep', opts or {}, M.config.default_opts)
     if #specs > 0 then
         for _, spec in ipairs(specs) do
             spec[4] = vim.tbl_extend('keep', spec[4] or {}, opts)
@@ -87,14 +91,16 @@ setmetatable(M, {
                 local mode = #key == 8 and key:sub(1, 1) or ''
 
                 return function(lhs, rhs, opts)
-                    opts = vim.tbl_extend('force', opts or {}, { noremap = true })
+                    opts = vim.tbl_extend('force', opts or {}, M.config.default_opts)
+                    opts.noremap = true
                     M.mapper:map({ mode, lhs, rhs, opts })
                 end
             elseif key:match('^.?map$') then
                 local mode = #key == 4 and key:sub(1, 1) or ''
 
                 return function(lhs, rhs, opts)
-                    opts = vim.tbl_extend('force', opts or {}, { noremap = false })
+                    opts = vim.tbl_extend('force', opts or {}, M.config.default_opts)
+                    opts.noremap = false
                     M.mapper:map({ mode, lhs, rhs, opts })
                 end
             end
@@ -117,7 +123,7 @@ setmetatable(M, {
 })
 
 function M.setup(config)
-    error('not implemented')
+    M.config = vim.tbl_extend('force', M.config, config)
 end
 
 --- Adds a set of mappings.
