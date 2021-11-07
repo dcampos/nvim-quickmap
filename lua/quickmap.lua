@@ -134,7 +134,7 @@ end
 ---
 --- quickmap.add {
 ---     { 'is', '<Tab>', function() ... end },
----     { 'is', '<Tab>', function() ... end, { noremap = false } },
+---     { 'is', '<Tab>', function() ... end, noremap = false },
 ---     ...
 --- }
 ---
