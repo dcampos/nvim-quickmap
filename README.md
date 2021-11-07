@@ -14,11 +14,17 @@ Neovim plugin for quickly mapping keys in Lua.
         ['<S-Tab>'] = function()
             ...
         end,
+        ['<C-Space>'] = {
+            function()
+                ...
+            end,
+            expr = true
+        }
     }
 
     quickmap.add {
         { 'is', '<Tab>', function() ... end },
-        { 'is', '<Tab>', function() ... end, { noremap = false } },
+        { 'is', '<Tab>', function() ... end, noremap = false },
         ...
     }
 
@@ -30,13 +36,6 @@ Neovim plugin for quickly mapping keys in Lua.
     }
 
     quickmap.add({ <specs> }, { <common opts> })
-
-    quickmap.add(
-        quickmap.with_opts({ noremap = false, expr = true }, {
-            { 'is', '<Tab>', function() ... end), },
-            { 'is', '<S-Tab>', function() ... end), },
-        })
-    )
 
     quickmap.setup({
         default_opts = { noremap = true, silent = true }

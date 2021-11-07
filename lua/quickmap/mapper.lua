@@ -90,6 +90,10 @@ end
 ---     end,
 --- }
 ---
+--- The value may also be a table with embedded options:
+---
+--- { function () ... end, expr = true }
+---
 ---@param specs table Table with specs
 ---@param opts table Table with options to apply to all specs
 function Mapper:add(specs, opts)
@@ -100,12 +104,15 @@ function Mapper:add(specs, opts)
     if self.mode then
         for key, value in pairs(specs) do
             if type(value) == 'table' then
-                opts = vim.tbl_extend('keep', value[2] or {}, opts)
-                self:map({ self.mode, key, value[1], opts }, self.buffer)
+                local values, map_opts = util.make_opts(value)
+                opts =  vim.tbl_extend('keep', map_opts or {}, opts)
+                self:map({ self.mode, key, values[1], opts }, self.buffer)
             else
                 self:map({ self.mode, key, value, opts }, self.buffer)
             end
         end
+    else
+        error('No mode defined')
     end
 end
 
@@ -134,8 +141,16 @@ function Mapper:buf_add(buffer, specs, opts)
     buffer = buffer == true and 0 or buffer
     if self.mode then
         for key, value in pairs(specs) do
-            self:map({ self.mode, key, value, opts }, buffer)
+            if type(value) == 'table' then
+                local values, map_opts = util.make_opts(value)
+                opts =  vim.tbl_extend('keep', map_opts or {}, opts)
+                self:map({ self.mode, key, values[1], opts }, buffer)
+            else
+                self:map({ self.mode, key, value, opts }, buffer)
+            end
         end
+    else
+        error('No mode defined')
     end
 end
 

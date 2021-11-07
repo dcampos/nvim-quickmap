@@ -1,6 +1,8 @@
 --[[
 Examples:
 
+    local quickmap = require('quickmap')
+
     quickmap['is']:add {
         ['<Tab>'] = function()
             ...
@@ -8,11 +10,17 @@ Examples:
         ['<S-Tab>'] = function()
             ...
         end,
+        ['<C-Space>'] = {
+            function()
+                ...
+            end,
+            expr = true
+        }
     }
 
     quickmap.add {
         { 'is', '<Tab>', function() ... end },
-        { 'is', '<Tab>', function() ... end, { noremap = false } },
+        { 'is', '<Tab>', function() ... end, noremap = false },
         ...
     }
 
@@ -24,13 +32,6 @@ Examples:
     }
 
     quickmap.add({ <specs> }, { <common opts> })
-
-    quickmap.add(
-        quickmap.with_opts({ noremap = false, expr = true }, {
-            { 'is', '<Tab>', function() ... end), },
-            { 'is', '<S-Tab>', function() ... end), },
-        })
-    )
 
     quickmap.setup({
         default_opts = { noremap = true, silent = true }
@@ -50,7 +51,9 @@ Examples:
 
 ]]
 
-local Mapper = require 'quickmap.mapper'
+local util = require('quickmap.util')
+
+local Mapper = require('quickmap.mapper')
 
 local M = {}
 
@@ -68,8 +71,9 @@ local function _add(specs, opts, buffer)
     opts = vim.tbl_extend('keep', opts or {}, M.config.default_opts)
     if #specs > 0 then
         for _, spec in ipairs(specs) do
-            spec[4] = vim.tbl_extend('keep', spec[4] or {}, opts)
-            M.mapper:map(spec, buffer)
+            local values, map_opts = util.make_opts(spec)
+            values[4] = vim.tbl_extend('keep', map_opts or {}, opts)
+            M.mapper:map(values, buffer)
         end
     else
         -- Each index is a mode
@@ -91,7 +95,7 @@ setmetatable(M, {
                 local mode = #key == 8 and key:sub(1, 1) or ''
 
                 return function(lhs, rhs, opts)
-                    opts = vim.tbl_extend('force', opts or {}, M.config.default_opts)
+                    opts = vim.tbl_extend('keep', opts or {}, M.config.default_opts)
                     opts.noremap = true
                     M.mapper:map({ mode, lhs, rhs, opts })
                 end
@@ -99,7 +103,7 @@ setmetatable(M, {
                 local mode = #key == 4 and key:sub(1, 1) or ''
 
                 return function(lhs, rhs, opts)
-                    opts = vim.tbl_extend('force', opts or {}, M.config.default_opts)
+                    opts = vim.tbl_extend('keep', opts or {}, M.config.default_opts)
                     opts.noremap = false
                     M.mapper:map({ mode, lhs, rhs, opts })
                 end

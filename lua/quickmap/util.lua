@@ -1,6 +1,5 @@
 local M = {}
 
-
 M.valid_opts = {
     'noremap',
     'nowait',
@@ -23,6 +22,19 @@ function M.validate_opts(opts)
         end
     end
     return true
+end
+
+function M.make_opts(value)
+    local opts = {}
+    local values = {}
+    for key, v in pairs(value) do
+        if vim.tbl_contains(M.valid_opts, key) then
+            opts[key] = v
+        else
+            values[key] = v
+        end
+    end
+    return values, opts
 end
 
 return M

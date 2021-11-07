@@ -45,8 +45,7 @@ describe("quickmap", function ()
     end)
 
     it("adds a mapping by spec with opts", function ()
-        local opts = { silent = false, nowait = true }
-        local spec = { 'n', '-', ':split<CR>', opts }
+        local spec = { 'n', '-', ':split<CR>', silent = false, nowait = true  }
         quickmap.add({spec})
         local mapping = get_keymap(spec[1], spec[2])
         assert.is_truthy(mapping)
@@ -99,8 +98,8 @@ describe("quickmap", function ()
 
     it("accepts overridden opts when mapping by mode", function ()
         local opts = { silent = false, nowait = true }
-        local spec = { 'n', '0', '^', { silent = true }}
-        quickmap.add({ n = { [spec[2]] = { spec[3], spec[4] }}}, opts)
+        local spec = { 'n', '0', '^' }
+        quickmap.add({ n = { [spec[2]] = { spec[3], silent = true }}}, opts)
         local mapping = get_keymap(spec[1], spec[2])
         assert.is_truthy(mapping)
         assert.are.same(spec[3], mapping.rhs)
@@ -116,12 +115,12 @@ describe("quickmap", function ()
 
     it("maps with inoremap", function ()
         local inoremap = quickmap.inoremap
-        local spec = { '0', '000', { silent = true }}
+        local spec = { '0', '000', { silent = false } }
         inoremap(unpack(spec))
         local mapping = get_keymap('i', spec[1])
         assert.is_truthy(mapping)
         assert.are.same(spec[2], mapping.rhs)
-        assert.are.same(1, mapping.silent)
+        assert.are.same(0, mapping.silent)
         assert.are.same(1, mapping.noremap)
     end)
 
@@ -138,8 +137,8 @@ describe("quickmap", function ()
 
     it("maps with __newindex", function ()
         local opts = { silent = false, nowait = true }
-        local spec = { 'n', '0', '^', { silent = true }}
-        quickmap['n'] = {{ [spec[2]] = { spec[3], spec[4] }}, opts}
+        local spec = { 'n', '0', '^' }
+        quickmap['n'] = {{ [spec[2]] = { spec[3], spec[4], silent = true }}, opts}
         local mapping = get_keymap(spec[1], spec[2])
         assert.is_truthy(mapping)
         assert.are.same(spec[3], mapping.rhs)
