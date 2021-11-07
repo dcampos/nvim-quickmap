@@ -43,6 +43,11 @@ end
 function Mapper._map(mode, spec, buffer)
     local lhs, rhs, opts = spec[2], spec[3], spec.opts
 
+    vim.validate({
+        specs = { lhs, 'string' },
+        opts = { opts, util.validate_opts, 'valid options' },
+    })
+
     if type(rhs) == 'function' then
         rhs = Mapper._set(mode, spec, buffer)
     end
@@ -90,7 +95,7 @@ end
 function Mapper:add(specs, opts)
     vim.validate({
         specs = { specs, 'table' },
-        opts = { opts, util.validate_opts, 'valid options' },
+        opts = { opts, 'table', true},
     })
     if self.mode then
         for key, value in pairs(specs) do
@@ -124,7 +129,7 @@ function Mapper:buf_add(buffer, specs, opts)
     vim.validate({
         buffer = { buffer, 'number' },
         specs = { specs, 'table' },
-        opts = { opts, util.validate_opts, 'valid options' },
+        opts = { opts, 'table', true},
     })
     buffer = buffer == true and 0 or buffer
     if self.mode then
