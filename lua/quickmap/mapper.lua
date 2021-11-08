@@ -99,14 +99,14 @@ end
 function Mapper:add(specs, opts)
     vim.validate({
         specs = { specs, 'table' },
-        opts = { opts, 'table', true},
+        opts = { opts, 'table', true },
     })
     if self.mode then
         for key, value in pairs(specs) do
             if type(value) == 'table' then
                 local values, map_opts = util.make_opts(value)
-                opts =  vim.tbl_extend('keep', map_opts or {}, opts)
-                self:map({ self.mode, key, values[1], opts }, self.buffer)
+                map_opts =  vim.tbl_extend('keep', map_opts, opts or {})
+                self:map({ self.mode, key, values[1], map_opts }, self.buffer)
             else
                 self:map({ self.mode, key, value, opts }, self.buffer)
             end
@@ -143,8 +143,8 @@ function Mapper:buf_add(buffer, specs, opts)
         for key, value in pairs(specs) do
             if type(value) == 'table' then
                 local values, map_opts = util.make_opts(value)
-                opts =  vim.tbl_extend('keep', map_opts or {}, opts)
-                self:map({ self.mode, key, values[1], opts }, buffer)
+                map_opts =  vim.tbl_extend('keep', map_opts, opts or {})
+                self:map({ self.mode, key, values[1], map_opts }, buffer)
             else
                 self:map({ self.mode, key, value, opts }, buffer)
             end

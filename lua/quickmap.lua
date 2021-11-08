@@ -61,6 +61,13 @@ M.config = {
     default_opts = Mapper._default_opts
 }
 
+local mapper_cache = {}
+
+local function _get_mapper(mode)
+    mapper_cache[mode] = mapper_cache[mode] or Mapper.new(mode)
+    return mapper_cache[mode]
+end
+
 ---@private
 local function _add(specs, opts, buffer)
     vim.validate({
@@ -78,8 +85,12 @@ local function _add(specs, opts, buffer)
     else
         -- Each index is a mode
         for mode, spec in pairs(specs) do
-            local mapper = Mapper.new(mode, buffer)
-            mapper:add(spec, opts)
+            local mapper = _get_mapper(mode)
+            if buffer then
+                mapper:buf_add(buffer, spec, opts)
+            else
+                mapper:add(spec, opts)
+            end
         end
     end
 end
@@ -89,8 +100,8 @@ M.mapper = Mapper.new()
 setmetatable(M, {
     __index = function(_, key)
         if type(key) == 'string' then
-            if key:match('^[cinsvx]+$') then
-                return Mapper.new(key)
+            if key:match('^[cinsvxt]+$') then
+                return _get_mapper(key)
             elseif key:match('^.?noremap$') then
                 local mode = #key == 8 and key:sub(1, 1) or ''
 
